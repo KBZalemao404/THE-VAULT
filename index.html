@@ -29,7 +29,7 @@
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0B1120; color: #F8FAFC; }
+        body { font-family: 'Inter', sans-serif; background-color: #0B1120; color: #F8FAFC; overflow-x: hidden; }
         
         /* Smooth Fade In */
         .tab-content { display: none; animation: fadeIn 0.4s ease-out; }
@@ -46,146 +46,144 @@
         .timeline-line::before {
             content: '';
             position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 24px;
-            width: 2px;
-            background: #334155;
-            z-index: 0;
+            top: 0; bottom: 0; left: 24px; width: 2px; background: #334155; z-index: 0;
         }
-        /* --- NOVO: Barra de Alerta Tático --- */
-.tactical-bar {
-    background: linear-gradient(90deg, #b91c1c, #7f1d1d);
-    color: white;
-    text-align: center;
-    padding: 8px 0;
-    font-size: 0.85rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-    position: relative;
-    z-index: 100; /* Acima do menu */
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
 
-.tactical-bar::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    animation: shine 3s infinite;
-}
+        /* --- MARKETING: Barra de Alerta Tático --- */
+        .tactical-bar {
+            background: linear-gradient(90deg, #b91c1c, #7f1d1d);
+            color: white;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 100;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
 
-@keyframes shine {
-    0% { left: -100%; }
-    100% { left: 200%; }
-}
+        .tactical-bar::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shine 3s infinite;
+        }
 
-/* --- NOVO: Efeito Glitch no Texto --- */
-.glitch-text {
-    position: relative;
-    color: white;
-}
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
 
-.glitch-text::before, .glitch-text::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #0B1120; /* Mesma cor do fundo */
-}
+        /* --- MARKETING: Efeito Glitch no Texto --- */
+        .glitch-text {
+            position: relative;
+            color: white; /* Fallback */
+            display: inline-block;
+        }
 
-.glitch-text::before {
-    left: 2px;
-    text-shadow: -1px 0 #ff00c1;
-    clip: rect(44px, 450px, 56px, 0);
-    animation: glitch-anim 5s infinite linear alternate-reverse;
-}
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0B1120;
+        }
 
-.glitch-text::after {
-    left: -2px;
-    text-shadow: -1px 0 #00fff9;
-    clip: rect(44px, 450px, 56px, 0);
-    animation: glitch-anim2 5s infinite linear alternate-reverse;
-}
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
 
-@keyframes glitch-anim {
-    0% { clip: rect(35px, 9999px, 36px, 0); }
-    20% { clip: rect(8px, 9999px, 98px, 0); }
-    40% { clip: rect(66px, 9999px, 14px, 0); }
-    60% { clip: rect(22px, 9999px, 3px, 0); }
-    80% { clip: rect(10px, 9999px, 88px, 0); }
-    100% { clip: rect(54px, 9999px, 49px, 0); }
-}
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
 
-@keyframes glitch-anim2 {
-    0% { clip: rect(15px, 9999px, 66px, 0); }
-    20% { clip: rect(88px, 9999px, 18px, 0); }
-    40% { clip: rect(6px, 9999px, 4px, 0); }
-    60% { clip: rect(52px, 9999px, 23px, 0); }
-    80% { clip: rect(10px, 9999px, 98px, 0); }
-    100% { clip: rect(34px, 9999px, 19px, 0); }
-}
+        @keyframes glitch-anim {
+            0% { clip: rect(35px, 9999px, 36px, 0); }
+            20% { clip: rect(8px, 9999px, 98px, 0); }
+            40% { clip: rect(66px, 9999px, 14px, 0); }
+            60% { clip: rect(22px, 9999px, 3px, 0); }
+            80% { clip: rect(10px, 9999px, 88px, 0); }
+            100% { clip: rect(54px, 9999px, 49px, 0); }
+        }
 
-/* --- NOVO: Modal Black Ops --- */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(5px);
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
+        @keyframes glitch-anim2 {
+            0% { clip: rect(15px, 9999px, 66px, 0); }
+            20% { clip: rect(88px, 9999px, 18px, 0); }
+            40% { clip: rect(6px, 9999px, 4px, 0); }
+            60% { clip: rect(52px, 9999px, 23px, 0); }
+            80% { clip: rect(10px, 9999px, 98px, 0); }
+            100% { clip: rect(34px, 9999px, 19px, 0); }
+        }
 
-.modal-overlay.show {
-    opacity: 1;
-    pointer-events: all;
-}
+        /* --- MARKETING: Modal Black Ops --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            padding: 20px;
+        }
 
-.modal-box {
-    background: #1e293b;
-    border: 1px solid #3b82f6;
-    padding: 2rem;
-    max-width: 500px;
-    border-radius: 1rem;
-    text-align: center;
-    box-shadow: 0 0 50px rgba(59, 130, 246, 0.3);
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-    position: relative;
-}
+        .modal-overlay.show { opacity: 1; pointer-events: all; }
 
-.modal-overlay.show .modal-box {
-    transform: scale(1);
-}
+        .modal-box {
+            background: #1e293b;
+            border: 1px solid #3b82f6;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(59, 130, 246, 0.25);
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
 
-.close-btn {
-    position: absolute;
-    top: 10px; right: 15px;
-    color: #94a3b8;
-    cursor: pointer;
-    font-size: 1.5rem;
-}
-.close-btn:hover { color: white; }
+        .modal-overlay.show .modal-box { transform: scale(1) translateY(0); }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 1.8rem;
+            transition: 0.2s;
+        }
+        .close-btn:hover { color: white; transform: rotate(90deg); }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <nav class="fixed w-full z-50 transition-all duration-300 border-b border-white/5 bg-dark/80 backdrop-blur-md">
+    <div class="tactical-bar">
+        <i class="fas fa-exclamation-triangle animate-pulse"></i>
+        <span class="text-xs md:text-sm">EVENTO DETECTADO: Desconto de Lançamento Ativo (-70%)</span>
+        <span class="bg-white/20 px-2 rounded text-[10px] ml-2 hidden md:inline">EXPIRA EM 24H</span>
+    </div>
+
+    <nav class="sticky top-0 w-full z-50 transition-all duration-300 border-b border-white/5 bg-dark/80 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
+            <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')">
                     <div class="bg-primary/20 p-2 rounded-lg">
                         <i class="fas fa-shield-alt text-primary text-2xl"></i>
@@ -198,41 +196,39 @@
                         <button onclick="switchTab('home')" class="nav-item text-gray-300 hover:text-white font-medium transition" data-target="home">Início</button>
                         <button onclick="switchTab('updates')" class="nav-item text-gray-300 hover:text-white font-medium transition" data-target="updates">Atualizações</button>
                         <button onclick="switchTab('news')" class="nav-item text-gray-300 hover:text-white font-medium transition" data-target="news">Novidades</button>
-                        <button onclick="switchTab('store')" class="bg-primary hover:bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition shadow-neon flex items-center gap-2 transform hover:-translate-y-0.5">
+                        <button onclick="switchTab('store')" class="bg-primary hover:bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-bold transition shadow-neon flex items-center gap-2 transform hover:-translate-y-0.5">
                             <i class="fas fa-crown"></i> Premium
                         </button>
                     </div>
                 </div>
 
                 <div class="md:hidden">
-                    <button onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white focus:outline-none">
+                    <button onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white focus:outline-none p-2">
                         <i class="fas fa-bars text-2xl"></i>
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden bg-card border-b border-gray-700">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <button onclick="switchTab('home'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700">Início</button>
-                <button onclick="switchTab('updates'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700">Atualizações</button>
-                <button onclick="switchTab('news'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700">Novidades</button>
-                <button onclick="switchTab('store'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary hover:bg-gray-700 font-bold">Loja Premium</button>
+        <div id="mobile-menu" class="hidden md:hidden bg-card border-b border-gray-700 absolute w-full left-0 top-16 shadow-2xl">
+            <div class="px-4 pt-2 pb-4 space-y-2">
+                <button onclick="switchTab('home'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-white hover:bg-white/5 transition">Início</button>
+                <button onclick="switchTab('updates'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 transition">Atualizações</button>
+                <button onclick="switchTab('news'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 transition">Novidades</button>
+                <button onclick="switchTab('store'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-primary bg-primary/10 border border-primary/20 hover:bg-primary/20 font-bold mt-2">Loja Premium</button>
             </div>
         </div>
     </nav>
 
-    <div class="h-20"></div>
-
     <div id="home" class="tab-content active">
-        <div class="relative overflow-hidden pt-16 pb-24 text-center px-4">
+        <div class="relative overflow-hidden pt-12 pb-20 text-center px-4">
             <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] -z-10"></div>
             
             <span class="inline-block py-1 px-3 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold mb-6 tracking-wide">V5.0 JÁ DISPONÍVEL</span>
             
             <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
                 Sua Segurança, <br class="hidden md:block" />
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">Nossa Obsessão.</span>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 glitch-text" data-text="Nossa Obsessão.">Nossa Obsessão.</span>
             </h1>
             
             <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
@@ -434,41 +430,73 @@
         </div>
     </footer>
 
+    <div id="promoModal" class="modal-overlay">
+        <div class="modal-box">
+            <span onclick="closeModal()" class="close-btn">&times;</span>
+            <div class="text-primary text-4xl mb-4"><i class="fas fa-user-shield"></i></div>
+            <h2 class="text-2xl font-bold text-white mb-2">Não saia desprotegido!</h2>
+            <p class="text-gray-400 mb-6">Detectamos que seu IP está visível. Garanta sua licença Anual hoje com bônus de VPN incluso.</p>
+            
+            <div class="bg-dark p-4 rounded-lg border border-gray-700 mb-6 flex justify-between items-center">
+                <span class="text-gray-400 line-through">R$ 170,00</span>
+                <span class="text-2xl font-bold text-accent">R$ 50,00</span>
+            </div>
+
+            <button onclick="switchTab('store'); closeModal()" class="w-full bg-primary hover:bg-blue-600 text-white font-bold py-3 rounded-lg shadow-neon transition">
+                RESGATAR OFERTA AGORA
+            </button>
+            <p class="text-xs text-gray-500 mt-4 cursor-pointer hover:text-white" onclick="closeModal()">Dispensar risco e continuar</p>
+        </div>
+    </div>
+
     <script>
-        // Lógica de Tabs Melhorada
+        // Lógica de Tabs e Navegação
         function switchTab(tabId) {
-            // Esconde todo conteúdo
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            // Remove estado ativo de todos os botões (desktop e mobile)
             document.querySelectorAll('[data-target]').forEach(btn => {
                 btn.classList.remove('text-white', 'text-primary'); 
                 btn.classList.add('text-gray-300');
             });
 
-            // Mostra o conteúdo alvo
             const targetContent = document.getElementById(tabId);
             if (targetContent) targetContent.classList.add('active');
 
-            // Ativa os botões correspondentes
             document.querySelectorAll(`[data-target="${tabId}"]`).forEach(btn => {
                 btn.classList.remove('text-gray-300');
                 btn.classList.add('text-white');
-                // Adiciona um underline visual se quiser, ou mantém simples
             });
             
-            // Scroll para o topo suavemente
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Menu Mobile Toggle
+        // Menu Mobile
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             menu.classList.toggle('hidden');
         }
 
-        // Inicializar na Home
+        // Lógica do Modal de Conversão
+        function showModal() {
+            if (!sessionStorage.getItem('modalClosed')) {
+                document.getElementById('promoModal').classList.add('show');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('promoModal').classList.remove('show');
+            sessionStorage.setItem('modalClosed', 'true'); // Só mostra 1x por sessão
+        }
+
+        // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
             switchTab('home');
+
+            // Disparar o modal após 5 segundos (se não for mobile muito pequeno)
+            setTimeout(() => {
+                if(window.innerWidth > 600) {
+                    showModal();
+                }
+            }, 5000);
         });
     </script>
 </body>
