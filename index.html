@@ -1,502 +1,744 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Vault - Enterprise Security</title>
+    
+    <title>The Vault | Enterprise Security Systems</title>
+    <meta name="description" content="Proteção de dados de nível militar com criptografia Zero-Knowledge. O gerenciador de senhas definitivo.">
+    <meta property="og:title" content="The Vault - Sua Segurança, Nossa Obsessão.">
+    <meta property="og:description" content="Garanta sua privacidade com criptografia AES-256 local. Planos a partir de R$ 9,90.">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=The+Vault+Security"> <meta property="og:type" content="website">
+    <meta name="theme-color" content="#3B82F6">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        tech: ['Rajdhani', 'sans-serif'],
+                    },
                     colors: {
-                        dark: '#0B1120',
-                        card: '#1E293B',
+                        dark: '#020617',
+                        card: 'rgba(15, 23, 42, 0.6)',
                         primary: '#3B82F6',
-                        accent: '#10B981', 
-                        danger: '#EF4444'
+                        accent: '#0EA5E9',
+                        success: '#10B981',
+                        danger: '#EF4444',
+                        purpleAccent: '#8A2BE2'
                     },
                     boxShadow: {
-                        'neon': '0 0 20px rgba(59, 130, 246, 0.5)',
-                        'neon-green': '0 0 20px rgba(16, 185, 129, 0.4)',
+                        'glow-primary': '0 0 20px -5px rgba(59, 130, 246, 0.5)',
+                        'glow-accent': '0 0 25px -5px rgba(14, 165, 233, 0.5)',
+                    },
+                    backgroundImage: {
+                        'card-shine': 'linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.1) 50%, transparent 75%)',
+                        'promo-gradient': 'linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(14,165,233,0.2) 100%)'
                     },
                     animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'spin-slow': 'spin 12s linear infinite',
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0B1120; color: #F8FAFC; overflow-x: hidden; }
+        body { background-color: #020617; color: #F8FAFC; overflow-x: hidden; }
         
-        /* Smooth Fade In */
-        .tab-content { display: none; animation: fadeIn 0.4s ease-out; }
+        /* Preloader Style */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #020617; z-index: 9999;
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
+        }
+        .loader-bar {
+            width: 200px; height: 4px; background: #1e293b; border-radius: 2px; overflow: hidden; margin-top: 20px;
+        }
+        .loader-progress {
+            width: 0%; height: 100%; background: #3B82F6;
+            box-shadow: 0 0 10px #3B82F6;
+            animation: load 2s ease-in-out forwards;
+        }
+        @keyframes load { 0% { width: 0%; } 50% { width: 70%; } 100% { width: 100%; } }
+
+        /* Fundo Cyber-Grid */
+        .bg-animation {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            animation: gridMove 25s linear infinite;
+            opacity: 0.6;
+        }
+        .bg-animation::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, transparent 0%, #020617 90%);
+        }
+        @keyframes gridMove {
+            0% { transform: translateY(0) translateZ(0) rotateX(0deg); }
+            100% { transform: translateY(60px) translateZ(0) rotateX(0deg); }
+        }
+
+        .tab-content { display: none; animation: fadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-        /* Timeline Connector */
-        .timeline-line::before {
-            content: '';
-            position: absolute;
-            top: 0; bottom: 0; left: 24px; width: 2px; background: #334155; z-index: 0;
+        .glass-card {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
         }
 
-        /* --- MARKETING: Barra de Alerta Tático --- */
-        .tactical-bar {
-            background: linear-gradient(90deg, #b91c1c, #7f1d1d);
-            color: white;
-            text-align: center;
-            padding: 8px 0;
-            font-size: 0.85rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            position: relative;
-            z-index: 100;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .tactical-bar::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% { left: -100%; }
-            100% { left: 200%; }
-        }
-
-        /* --- MARKETING: Efeito Glitch no Texto --- */
-        .glitch-text {
-            position: relative;
-            color: white; /* Fallback */
-            display: inline-block;
-        }
-
-        .glitch-text::before, .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #0B1120;
-        }
-
-        .glitch-text::before {
-            left: 2px;
-            text-shadow: -1px 0 #ff00c1;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim 5s infinite linear alternate-reverse;
-        }
-
-        .glitch-text::after {
-            left: -2px;
-            text-shadow: -1px 0 #00fff9;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim2 5s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-anim {
-            0% { clip: rect(35px, 9999px, 36px, 0); }
-            20% { clip: rect(8px, 9999px, 98px, 0); }
-            40% { clip: rect(66px, 9999px, 14px, 0); }
-            60% { clip: rect(22px, 9999px, 3px, 0); }
-            80% { clip: rect(10px, 9999px, 88px, 0); }
-            100% { clip: rect(54px, 9999px, 49px, 0); }
-        }
-
-        @keyframes glitch-anim2 {
-            0% { clip: rect(15px, 9999px, 66px, 0); }
-            20% { clip: rect(88px, 9999px, 18px, 0); }
-            40% { clip: rect(6px, 9999px, 4px, 0); }
-            60% { clip: rect(52px, 9999px, 23px, 0); }
-            80% { clip: rect(10px, 9999px, 98px, 0); }
-            100% { clip: rect(34px, 9999px, 19px, 0); }
-        }
-
-        /* --- MARKETING: Modal Black Ops --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-            padding: 20px;
-        }
-
-        .modal-overlay.show { opacity: 1; pointer-events: all; }
-
-        .modal-box {
-            background: #1e293b;
-            border: 1px solid #3b82f6;
-            padding: 2.5rem;
-            width: 100%;
-            max-width: 480px;
-            border-radius: 1rem;
-            text-align: center;
-            box-shadow: 0 0 60px rgba(59, 130, 246, 0.25);
-            transform: scale(0.95) translateY(20px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-        }
-
-        .modal-overlay.show .modal-box { transform: scale(1) translateY(0); }
-
-        .close-btn {
-            position: absolute;
-            top: 15px; right: 20px;
-            color: #64748b;
-            cursor: pointer;
-            font-size: 1.8rem;
-            transition: 0.2s;
-        }
-        .close-btn:hover { color: white; transform: rotate(90deg); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3B82F6; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen font-sans">
 
-    <div class="tactical-bar">
-        <i class="fas fa-exclamation-triangle animate-pulse"></i>
-        <span class="text-xs md:text-sm">EVENTO DETECTADO: Desconto de Lançamento Ativo (-72%)</span>
-        <span class="bg-white/20 px-2 rounded text-[10px] ml-2 hidden md:inline">EXPIRA EM 48H</span>
+    <div id="preloader">
+        <div class="font-tech text-primary text-2xl tracking-[0.2em] font-bold animate-pulse">
+            <i class="fas fa-shield-halved mr-2"></i> INITIALIZING SYSTEM...
+        </div>
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+        <div class="font-mono text-gray-500 text-xs mt-2">Loading modules: crypto_aes256.py</div>
     </div>
 
-    <nav class="sticky top-0 w-full z-50 transition-all duration-300 border-b border-white/5 bg-dark/80 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')">
-                    <div class="bg-primary/20 p-2 rounded-lg">
-                        <i class="fas fa-shield-alt text-primary text-2xl"></i>
-                    </div>
-                    <span class="font-bold text-xl tracking-wider text-white">THE VAULT</span>
+    <div class="bg-animation"></div>
+
+    <nav class="sticky top-0 w-full z-50 border-b border-white/5 bg-dark/80 backdrop-blur-xl">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="flex items-center justify-between h-20">
+                
+                <div class="flex items-center gap-3 cursor-pointer group pl-2" onclick="switchTab('home')">
+                    <img src="logo.png" alt="StinLink Logo" class="w-12 h-12 rounded-xl border border-primary/30 object-cover shadow-glow-primary group-hover:scale-105 transition-transform duration-300">
+                    <span class="font-tech font-bold text-2xl tracking-wider text-white group-hover:text-primary transition-colors">THE VAULT</span>
                 </div>
                 
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-center space-x-6">
-                        <button onclick="switchTab('home')" class="nav-item text-gray-300 hover:text-white font-medium transition" data-target="home">Início</button>
-                        <button onclick="switchTab('updates')" class="nav-item text-gray-300 hover:text-white font-medium transition" data-target="updates">Atualizações</button>
-                        <button onclick="switchTab('news')" class="nav-item text-gray-300 hover:text-white font-medium transition" data-target="news">Novidades</button>
-                        <button onclick="switchTab('store')" class="bg-primary hover:bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-bold transition shadow-neon flex items-center gap-2 transform hover:-translate-y-0.5">
-                            <i class="fas fa-crown"></i> Premium
-                        </button>
-                    </div>
+                <div class="hidden xl:flex items-center space-x-1 bg-card/30 p-1.5 rounded-2xl border border-white/5 backdrop-blur-md">
+                    <button onclick="switchTab('home')" class="nav-item px-5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white transition" data-target="home">Início</button>
+                    <div class="h-6 w-px bg-white/10 mx-1"></div>
+                    <button onclick="switchTab('updates')" class="nav-item px-5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white transition" data-target="updates">Updates</button>
+                    <button onclick="switchTab('roadmap')" class="nav-item px-5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white transition relative" data-target="roadmap">
+                        Roadmap
+                        <span class="absolute top-2 right-2 w-1.5 h-1.5 bg-accent rounded-full animate-pulse"></span>
+                    </button>
+                     <div class="h-6 w-px bg-white/10 mx-1"></div>
+                    <button onclick="switchTab('promos')" class="nav-item px-5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white transition relative group" data-target="promos">
+                        <i class="fas fa-tags mr-1 text-accent group-hover:animate-bounce"></i> Promoções
+                    </button>
+                     <div class="h-6 w-px bg-white/10 mx-1"></div>
+                    <button onclick="switchTab('team')" class="nav-item px-5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white transition" data-target="team">Criadores</button>
+                    <button onclick="switchTab('partners')" class="nav-item px-5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white transition" data-target="partners">Parceiros</button>
                 </div>
 
-                <div class="md:hidden">
-                    <button onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white focus:outline-none p-2">
-                        <i class="fas fa-bars text-2xl"></i>
+                <div class="hidden md:block pr-2">
+                     <button onclick="switchTab('store')" class="group relative inline-flex items-center justify-center px-8 py-3 font-tech font-bold text-white transition-all duration-300 bg-primary rounded-xl hover:bg-blue-500 shadow-glow-primary hover:shadow-glow-accent hover:-translate-y-0.5 overflow-hidden">
+                        <span class="absolute inset-0 bg-card-shine translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                        <i class="fas fa-gem mr-2 animate-pulse-slow"></i> LOJA VIP
                     </button>
                 </div>
+
+                <button onclick="toggleMobileMenu()" class="xl:hidden text-gray-300 text-2xl p-2 hover:text-primary transition"><i class="fas fa-bars"></i></button>
             </div>
         </div>
-
-        <div id="mobile-menu" class="hidden md:hidden bg-card border-b border-gray-700 absolute w-full left-0 top-16 shadow-2xl">
-            <div class="px-4 pt-2 pb-4 space-y-2">
-                <button onclick="switchTab('home'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-white hover:bg-white/5 transition">Início</button>
-                <button onclick="switchTab('updates'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 transition">Atualizações</button>
-                <button onclick="switchTab('news'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:bg-white/5 transition">Novidades</button>
-                <button onclick="switchTab('store'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-primary bg-primary/10 border border-primary/20 hover:bg-primary/20 font-bold mt-2">Loja Premium</button>
+        
+        <div id="mobile-menu" class="hidden xl:hidden bg-dark/95 border-b border-white/10 absolute w-full left-0 top-20 shadow-2xl z-40 backdrop-blur-xl">
+            <div class="p-4 space-y-3 max-h-[80vh] overflow-y-auto">
+                <button onclick="switchTab('home'); toggleMobileMenu()" class="block w-full text-left px-4 py-4 bg-white/5 rounded-xl text-white font-medium border border-white/5">Início</button>
+                <button onclick="switchTab('store'); toggleMobileMenu()" class="block w-full text-left px-4 py-4 bg-primary text-white font-bold rounded-xl mt-2 shadow-glow-primary flex items-center justify-center gap-2"><i class="fas fa-gem"></i> ACESSAR LOJA VIP</button>
+                
+                <div class="border-t border-white/5 my-4 pt-4">
+                     <p class="text-xs text-gray-500 px-4 mb-2 uppercase tracking-wider font-bold">Navegação</p>
+                    <button onclick="switchTab('updates'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition">Updates</button>
+                    <button onclick="switchTab('roadmap'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition flex justify-between items-center">Roadmap <span class="w-2 h-2 bg-accent rounded-full"></span></button>
+                    <button onclick="switchTab('promos'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-accent hover:text-white hover:bg-accent/10 rounded-lg transition font-bold"><i class="fas fa-tags mr-2"></i> Promoções</button>
+                </div>
+                 <div class="border-t border-white/5 my-4 pt-4">
+                    <p class="text-xs text-gray-500 px-4 mb-2 uppercase tracking-wider font-bold">Sobre</p>
+                    <button onclick="switchTab('team'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition">Criadores</button>
+                    <button onclick="switchTab('partners'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition">Parceiros</button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <div id="home" class="tab-content active">
-        <div class="relative overflow-hidden pt-12 pb-20 text-center px-4">
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] -z-10"></div>
+    <div id="home" class="tab-content active relative z-10">
+        <div class="relative pt-24 pb-32 text-center px-4 overflow-hidden">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-primary/10 rounded-full blur-[150px] -z-10 animate-pulse-slow"></div>
+
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-success/30 bg-success/5 text-success text-sm font-tech font-bold mb-8 tracking-widest uppercase animate-float shadow-glow-primary/20">
+                <i class="fas fa-shield-check"></i> Sistema Operacional Seguro V5.0
+            </div>
             
-            <span class="inline-block py-1 px-3 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold mb-6 tracking-wide">V5.0 JÁ DISPONÍVEL</span>
-            
-            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
-                Sua Segurança, <br class="hidden md:block" />
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 glitch-text" data-text="Nossa Obsessão.">Nossa Obsessão.</span>
+            <h1 class="text-6xl md:text-8xl font-extrabold mb-8 tracking-tight leading-tight font-tech drop-shadow-2xl">
+                Proteção Absoluta.<br />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-300 to-accent">Acessibilidade Total.</span>
             </h1>
             
-            <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-                Pare de arriscar sua vida digital. Tenha criptografia militar, monitoramento da Dark Web e controle total em um único lugar.
+            <p class="text-xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+                A mesma tecnologia de encriptação usada por governos, agora simplificada e acessível para você. Sua privacidade não é um luxo, é um direito.
             </p>
             
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="https://github.com/KBZalemao404/the-vault-site/releases/download/v5.0/instalador.SLK.exe" 
-                   class="bg-white text-dark hover:bg-gray-100 px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition transform hover:scale-105 shadow-lg">
-                    <i class="fab fa-windows text-xl"></i> Download Windows
-                </a>
-                <button onclick="switchTab('store')" class="bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 px-8 py-4 rounded-xl font-bold text-lg transition">
-                    Ver Planos
+            <div class="flex flex-col sm:flex-row justify-center gap-6 mb-24">
+                <button onclick="switchTab('store')" class="group relative px-10 py-5 bg-primary hover:bg-blue-500 text-white rounded-2xl font-bold text-xl transition-all duration-300 shadow-glow-primary hover:shadow-glow-accent hover:-translate-y-1">
+                    <span class="relative z-10 flex items-center gap-3"><i class="fas fa-cart-shopping"></i> Ver Planos e Preços</span>
                 </button>
-            </div>
-        </div>
-
-        <div class="container mx-auto px-4 pb-20">
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-card/50 hover:bg-card p-8 rounded-2xl border border-white/5 hover:border-primary/50 transition duration-300 group">
-                    <div class="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                        <i class="fas fa-lock text-accent text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">Criptografia Local (AES-256)</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Seus dados são encriptados no seu dispositivo antes de serem salvos. Nem nós temos a chave.</p>
-                </div>
-
-                <div class="bg-card/50 hover:bg-card p-8 rounded-2xl border border-white/5 hover:border-danger/50 transition duration-300 group">
-                    <div class="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                        <i class="fas fa-user-secret text-danger text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">Radar Dark Web</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Escaneamento 24/7 de bancos de dados vazados. Receba alertas instatâneos se sua senha vazar.</p>
-                </div>
-
-                <div class="bg-card/50 hover:bg-card p-8 rounded-2xl border border-white/5 hover:border-yellow-500/50 transition duration-300 group">
-                    <div class="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                        <i class="fas fa-bolt text-yellow-500 text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">Zero-Latency Core</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Reescrito em C++ para máxima performance. Abre instantaneamente e não consome sua RAM.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="updates" class="tab-content container mx-auto px-4 py-12 max-w-4xl">
-        <h2 class="text-3xl font-bold mb-10 pl-2 border-l-4 border-primary">Changelog</h2>
-        
-        <div class="timeline-line relative space-y-12">
-            <div class="relative pl-16">
-                <div class="absolute left-3 top-1 w-10 h-10 bg-primary rounded-full flex items-center justify-center z-10 shadow-neon">
-                    <i class="fas fa-star text-white text-sm"></i>
-                </div>
-                <div class="bg-card border border-primary/30 p-6 rounded-xl relative">
-                    <div class="absolute -left-2 top-6 w-4 h-4 bg-card border-l border-t border-primary/30 transform -rotate-45"></div>
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-xl font-bold text-white">Versão 5.0 <span class="text-primary text-sm font-normal ml-2">Stable</span></h3>
-                            <p class="text-xs text-gray-500 uppercase tracking-widest mt-1">28 Novembro 2025</p>
-                        </div>
-                        <span class="bg-primary/20 text-primary text-xs font-bold px-2 py-1 rounded">ATUAL</span>
-                    </div>
-                    <ul class="space-y-3">
-                        <li class="flex items-start gap-3 text-gray-300 text-sm"><i class="fas fa-check-circle text-accent mt-1"></i> <span><strong>SISTEMA DE CATEGORIAS:</strong> Organize senhas em Financeiro, Social, Jogos, etc.</span></li>
-                        <li class="flex items-start gap-3 text-gray-300 text-sm"><i class="fas fa-check-circle text-accent mt-1"></i> <span><strong>NOTAS SEGURAS:</strong> Armazene chaves PIX, sementes de cripto e anotações secretas.</span></li>
-                        <li class="flex items-start gap-3 text-gray-300 text-sm"><i class="fas fa-check-circle text-accent mt-1"></i> <span><strong>MEDIDOR DE FORÇA:</strong> Análise de entropia de senha em tempo real.</span></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="relative pl-16 opacity-70 hover:opacity-100 transition">
-                <div class="absolute left-4 top-1 w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center z-10 border border-gray-600">
-                    <i class="fas fa-code-branch text-gray-400 text-xs"></i>
-                </div>
-                <div class="bg-card border border-white/5 p-6 rounded-xl">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-300">Versão 4.0</h3>
-                            <p class="text-xs text-gray-500 uppercase tracking-widest mt-1">20 Novembro 2025</p>
-                        </div>
-                    </div>
-                    <ul class="space-y-2">
-                        <li class="flex items-start gap-3 text-gray-400 text-sm"><i class="fas fa-wrench text-gray-500 mt-1"></i> Painel de Configurações Avançadas.</li>
-                        <li class="flex items-start gap-3 text-gray-400 text-sm"><i class="fas fa-wrench text-gray-500 mt-1"></i> Factory Reset (Limpeza de emergência).</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="news" class="tab-content container mx-auto px-4 py-12 max-w-5xl">
-        <h2 class="text-3xl font-bold mb-10">Artigos & Segurança</h2>
-        
-        <div class="grid md:grid-cols-2 gap-8">
-            <div class="bg-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/50 transition group cursor-pointer">
-                <div class="h-48 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                    <i class="fas fa-bug text-6xl text-gray-700 group-hover:text-primary transition duration-500"></i>
-                </div>
-                <div class="p-6">
-                    <div class="text-accent text-xs font-bold tracking-wider mb-2">CYBERSECURITY</div>
-                    <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition">O perigo do "Credential Stuffing"</h3>
-                    <p class="text-gray-400 text-sm mb-4 line-clamp-3">
-                        Usar a mesma senha em vários sites é o erro número 1. Veja como hackers usam robôs para testar milhões de senhas vazadas em segundos e como o The Vault impede isso.
-                    </p>
-                    <span class="text-primary text-sm font-bold flex items-center gap-2">Ler artigo <i class="fas fa-arrow-right text-xs"></i></span>
-                </div>
-            </div>
-
-            <div class="bg-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/50 transition group cursor-pointer">
-                <div class="h-48 bg-gradient-to-br from-blue-900 to-dark flex items-center justify-center relative overflow-hidden">
-                    <div class="absolute inset-0 bg-primary/20"></div>
-                    <i class="fas fa-mobile-alt text-6xl text-white relative z-10"></i>
-                </div>
-                <div class="p-6">
-                    <div class="text-blue-400 text-xs font-bold tracking-wider mb-2">ROADMAP</div>
-                    <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition">Integração Mobile via Wi-Fi</h3>
-                    <p class="text-gray-400 text-sm mb-4 line-clamp-3">
-                        Estamos eliminando a nuvem da equação. Em breve, você poderá sincronizar suas senhas do PC para o celular usando apenas sua rede Wi-Fi local segura.
-                    </p>
-                    <span class="text-primary text-sm font-bold flex items-center gap-2">Ver detalhes <i class="fas fa-arrow-right text-xs"></i></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="store" class="tab-content container mx-auto px-4 py-16">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-extrabold mb-6">Invista na sua <span class="text-primary">Privacidade</span></h2>
-            <p class="text-gray-400 max-w-xl mx-auto">Escolha o plano ideal. Todos incluem garantia de funcionamento e suporte técnico.</p>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto items-center">
-            
-            <div class="bg-card p-8 rounded-2xl border border-white/5 hover:border-white/10 transition">
-                <h3 class="text-lg font-medium text-gray-400">Mensal</h3>
-                <div class="flex items-baseline gap-1 my-4">
-                    <span class="text-4xl font-bold text-white">R$ 15</span>
-                    <span class="text-gray-500">/mês</span>
-                </div>
-                <p class="text-sm text-gray-400 mb-6">Para quem quer testar sem compromisso.</p>
-                <a href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=011d0d050de5433582467537cc7d21f9" target="_blank" class="block w-full py-3 text-center border border-gray-600 text-white font-bold rounded-lg hover:bg-gray-700 transition">Assinar Mensal</a>
-                <ul class="mt-8 space-y-4 text-sm text-gray-300">
-                    <li class="flex gap-3"><i class="fas fa-check text-gray-500"></i> Dark Web Monitor</li>
-                    <li class="flex gap-3"><i class="fas fa-check text-gray-500"></i> Auditoria Básica</li>
-                </ul>
-            </div>
-
-            <div class="relative bg-gradient-to-b from-slate-800 to-dark p-8 rounded-3xl border-2 border-primary shadow-neon transform scale-105 z-10">
-                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-blue-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-lg">Recomendado</div>
-                <h3 class="text-xl font-bold text-white">Anual</h3>
-                <div class="flex items-baseline gap-1 my-4">
-                    <span class="text-5xl font-extrabold text-white">R$ 50</span>
-                    <span class="text-gray-400">/ano</span>
-                </div>
-                <p class="text-sm text-blue-200 mb-8 bg-blue-900/30 py-1 px-2 rounded inline-block">Economia de 72% vs Mensal</p>
-                
-                <a href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=56c718f4cf89406393d6524e89181c17" target="_blank" class="block w-full py-4 text-center bg-primary hover:bg-blue-600 text-white font-bold rounded-xl transition shadow-lg animate-pulse-slow">
-                    ASSINAR AGORA
+                 <a href="#" class="px-10 py-5 glass-card hover:bg-white/10 text-white rounded-2xl font-medium text-lg transition-all duration-300 flex items-center justify-center gap-3 border-white/10 hover:border-white/30 group">
+                    <i class="fab fa-windows text-xl group-hover:text-accent transition"></i> Download Trial Grátis
                 </a>
-                
-                <div class="h-px bg-gray-700 my-8"></div>
-                
-                <ul class="space-y-4 text-sm text-gray-200 font-medium">
-                    <li class="flex gap-3"><i class="fas fa-check-circle text-primary"></i> <strong>Acesso Total Premium</strong></li>
-                    <li class="flex gap-3"><i class="fas fa-check-circle text-primary"></i> Suporte Prioritário (WhatsApp)</li>
-                    <li class="flex gap-3"><i class="fas fa-check-circle text-primary"></i> Early Access a Novidades</li>
-                </ul>
-            </div>
-
-            <div class="bg-card p-8 rounded-2xl border border-purple-500/30 hover:border-purple-500 transition">
-                <h3 class="text-lg font-medium text-purple-400">Vitalício</h3>
-                <div class="flex items-baseline gap-1 my-4">
-                    <span class="text-4xl font-bold text-white">R$ 100</span>
-                    <span class="text-gray-500">/único</span>
-                </div>
-                <p class="text-sm text-gray-400 mb-6">Pague uma vez, use para sempre.</p>
-                <a href="https://mpago.la/2L6FkLu" target="_blank" class="block w-full py-3 text-center bg-purple-600/10 border border-purple-500 text-purple-400 font-bold rounded-lg hover:bg-purple-600 hover:text-white transition">Comprar Vitalício</a>
-                <ul class="mt-8 space-y-4 text-sm text-gray-300">
-                    <li class="flex gap-3"><i class="fas fa-infinity text-purple-500"></i> Sem mensalidades</li>
-                    <li class="flex gap-3"><i class="fas fa-medal text-purple-500"></i> Badge "Early Adopter"</li>
-                </ul>
             </div>
         </div>
     </div>
 
-    <footer class="bg-card border-t border-white/5 mt-auto py-12">
-        <div class="container mx-auto px-4 text-center">
-            <div class="flex justify-center items-center gap-2 mb-6 opacity-50">
-                <i class="fas fa-shield-alt text-2xl"></i>
-                <span class="font-bold text-xl">THE VAULT</span>
+    <div id="updates" class="tab-content container mx-auto px-6 py-24 max-w-4xl">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-tech font-bold mb-4">Histórico de Evolução</h2>
+            <p class="text-gray-400">Onde estivemos e o que já construímos.</p>
+        </div>
+        
+        <div class="space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-primary before:via-white/10 before:to-transparent">
+            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-dark bg-primary shadow-glow-primary shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                    <i class="fas fa-flag-checkered text-white text-sm"></i>
+                </div>
+                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card p-8 rounded-3xl border-primary/50 shadow-glow-primary/20 hover:border-primary transition duration-300 relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-32 h-32 bg-primary/20 blur-3xl rounded-full"></div>
+                    <div class="flex justify-between items-center mb-4 relative z-10">
+                        <h3 class="font-tech font-bold text-2xl text-white"><i class="fas fa-rocket mr-2 text-primary"></i> V5.0 - The Core</h3>
+                        <span class="text-xs font-bold bg-success/20 text-success px-3 py-1 rounded-full border border-success/30">ATUAL</span>
+                    </div>
+                    <p class="text-gray-400 mb-6 relative z-10">Reescrita completa do motor de criptografia em C++ para performance nativa e zero latência. Introdução do novo Dashboard.</p>
+                    <ul class="space-y-3 text-sm text-gray-300 relative z-10">
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-primary"></i> Novo Dashboard Analítico</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-primary"></i> Integração Dark Web Radar 2.0</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-primary"></i> Redução de 60% no uso de RAM</li>
+                    </ul>
+                </div>
             </div>
-            <p class="text-gray-500 text-sm mb-6">© 2025 The Vault Security. Software desenvolvido para proteção de dados pessoais.</p>
-            <div class="flex justify-center gap-6 text-sm text-gray-400">
-                <a href="#" class="hover:text-white transition">Termos de Uso</a>
-                <a href="#" class="hover:text-white transition">Política de Privacidade</a>
-                <a href="#" class="hover:text-white transition">Suporte</a>
+             <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group opacity-70 hover:opacity-100 transition duration-500">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-dark bg-gray-700 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                </div>
+                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card p-6 rounded-3xl border-white/5 hover:border-white/20 transition relative overflow-hidden">
+                     <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-tech font-bold text-lg text-gray-300">V4.5 - Security Patch</h3>
+                         <span class="text-xs text-gray-500 font-mono">NOV 2025</span>
+                    </div>
+                    <p class="text-gray-500 text-sm">Correções críticas de segurança e melhorias na interface de login.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="roadmap" class="tab-content container mx-auto px-6 py-24 max-w-6xl">
+        <div class="text-center mb-20">
+             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-accent/30 bg-accent/5 text-accent text-sm font-tech font-bold mb-6 tracking-widest uppercase shadow-glow-accent/20">
+                <i class="fas fa-telescope animate-pulse-slow"></i> Visão de Futuro
+            </div>
+            <h2 class="text-5xl font-tech font-bold mb-4">Roadmap de Desenvolvimento</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg">Nossa missão não para. Veja o que estamos construindo para as próximas versões.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-10">
+            <div class="glass-card p-8 rounded-3xl border-t-4 border-accent relative group hover:-translate-y-3 transition-all duration-500 overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                <div class="absolute top-6 right-6 text-6xl text-accent/5 font-tech font-bold group-hover:text-accent/10 transition transform group-hover:scale-110">Q1</div>
+                
+                <div class="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mb-8 border border-accent/20 group-hover:shadow-glow-accent transition relative z-10">
+                    <i class="fas fa-wifi text-3xl text-accent"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4 relative z-10">Local Wi-Fi Sync</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-8 relative z-10">
+                    Sincronize suas senhas entre PC e Celular usando apenas sua rede local. Sem nuvem, sem internet, privacidade total.
+                </p>
+                 <div class="w-full bg-dark/50 h-3 rounded-full overflow-hidden relative z-10 border border-white/5">
+                    <div class="bg-accent h-full w-[85%] shadow-glow-accent relative overflow-hidden">
+                        <div class="absolute inset-0 bg-card-shine animate-pulse-slow opacity-50"></div>
+                    </div>
+                </div>
+                <p class="text-sm text-accent mt-3 text-right font-bold relative z-10">85% Concluído</p>
+            </div>
+
+            <div class="glass-card p-8 rounded-3xl border-t-4 border-yellow-500 relative group hover:-translate-y-3 transition-all duration-500 overflow-hidden opacity-90 hover:opacity-100">
+                 <div class="absolute inset-0 bg-gradient-to-b from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                 <div class="absolute top-6 right-6 text-6xl text-yellow-500/5 font-tech font-bold">Q2</div>
+                <div class="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center mb-8 border border-yellow-500/20 relative z-10">
+                    <i class="fas fa-fingerprint text-3xl text-yellow-500"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4 relative z-10">Biometria de Hardware</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-8 relative z-10">
+                    Integração nativa com Windows Hello e TouchID para desbloqueio instantâneo do cofre usando sua digital ou face.
+                </p>
+                 <div class="w-full bg-dark/50 h-3 rounded-full overflow-hidden relative z-10 border border-white/5">
+                    <div class="bg-yellow-500 h-full w-[40%] relative overflow-hidden"></div>
+                </div>
+                 <p class="text-sm text-yellow-500 mt-3 text-right font-bold relative z-10">40% Concluído</p>
+            </div>
+
+            <div class="glass-card p-8 rounded-3xl border-t-4 border-purpleAccent relative group hover:-translate-y-3 transition-all duration-500 overflow-hidden opacity-75 hover:opacity-100">
+                 <div class="absolute inset-0 bg-gradient-to-b from-purpleAccent/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                 <div class="absolute top-6 right-6 text-6xl text-purpleAccent/5 font-tech font-bold">Q3+</div>
+                <div class="w-16 h-16 bg-purpleAccent/10 rounded-2xl flex items-center justify-center mb-8 border border-purpleAccent/20 relative z-10">
+                    <i class="fas fa-users-viewfinder text-3xl text-purpleAccent"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4 relative z-10">Vault Compartilhado (Teams)</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-8 relative z-10">
+                    Compartilhamento seguro de credenciais específicas com familiares ou equipes de trabalho, mantendo o controle zero-knowledge.
+                </p>
+                <div class="inline-block px-4 py-2 rounded-xl bg-purpleAccent/10 border border-purpleAccent/20 text-sm text-purpleAccent font-bold relative z-10">
+                    <i class="fas fa-pencil-ruler mr-2"></i> Em Planejamento
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="promos" class="tab-content container mx-auto px-6 py-24 max-w-5xl">
+         <div class="text-center mb-20">
+            <h2 class="text-5xl font-tech font-bold mb-6"><i class="fas fa-tags text-accent mr-3 animate-bounce"></i>Ofertas Relâmpago</h2>
+            <p class="text-gray-400 text-lg">Oportunidades únicas para garantir sua segurança máxima com condições especiais.</p>
+        </div>
+
+        <div class="glass-card p-12 rounded-[3rem] border-2 border-accent/50 relative overflow-hidden group hover:border-accent transition-all duration-500 bg-promo-gradient shadow-glow-accent/30 hover:shadow-glow-accent/60 hover:scale-[1.02]">
+            
+            <div class="absolute -top-40 -right-40 w-96 h-96 bg-accent/20 blur-[100px] rounded-full group-hover:bg-accent/30 transition-all duration-500 animate-pulse-slow"></div>
+            <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-dark/50 to-transparent z-0"></div>
+            <div class="absolute inset-0 bg-card-shine opacity-20 animate-spin-slow z-0 pointer-events-none"></div>
+
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
+                <div class="text-center lg:text-left flex-1">
+                    <div class="flex flex-wrap justify-center lg:justify-start gap-4 mb-6">
+                         <div class="inline-flex items-center px-4 py-2 bg-accent text-dark font-extrabold uppercase tracking-wider text-sm rounded-full shadow-glow-accent">
+                            <i class="fas fa-bolt mr-2"></i> Lote de Lançamento
+                        </div>
+                        <div class="inline-flex items-center px-4 py-2 bg-dark/50 border border-accent/30 text-accent font-bold uppercase tracking-wider text-sm rounded-full">
+                             <i class="fas fa-hourglass-half mr-2 animate-pulse"></i> Vagas Limitadas
+                        </div>
+                    </div>
+                   
+                    <h3 class="text-4xl md:text-6xl font-tech font-extrabold text-white mb-6 leading-tight drop-shadow-lg">
+                        Pacote Vitalício <br/><span class="text-accent">"Early Adopter"</span>
+                    </h3>
+                    <p class="text-gray-200 text-lg max-w-xl mb-8 leading-relaxed font-medium drop-shadow">
+                        Acesso vitalício a todas as funcionalidades futuras, suporte prioritário direto com os devs e uma badge exclusiva no seu perfil. Pague uma vez, use para sempre.
+                    </p>
+                    
+                    <div class="mb-8">
+                        <div class="flex justify-between text-sm font-bold mb-2 px-1">
+                            <span class="text-accent">Progresso do Lote</span>
+                            <span class="text-white">87% Vendido</span>
+                        </div>
+                         <div class="w-full bg-dark/50 h-4 rounded-full overflow-hidden border border-accent/30 p-0.5">
+                            <div class="bg-gradient-to-r from-accent to-primary h-full w-[87%] rounded-full shadow-glow-accent relative">
+                                 <div class="absolute inset-0 bg-card-shine animate-pulse-slow opacity-70"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row items-center gap-6 justify-center lg:justify-start">
+                         <div class="text-gray-400 line-through text-2xl font-bold decoration-danger">R$ 299,90</div>
+                        <div class="text-6xl font-extrabold text-white drop-shadow-[0_0_15px_rgba(14,165,233,0.8)]">
+                            R$ 79,90 <span class="text-lg font-bold text-accent/80">/único</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-6 min-w-[300px] text-center bg-dark/30 p-8 rounded-3xl border border-white/5 backdrop-blur-sm">
+                    <div>
+                        <p class="text-accent font-bold mb-2 uppercase tracking-widest text-sm">Oferta Expira Em:</p>
+                        <div class="flex justify-center gap-3 font-mono text-3xl font-bold text-white">
+                            <div class="bg-dark/50 p-3 rounded-xl border border-accent/30">04</div>:
+                            <div class="bg-dark/50 p-3 rounded-xl border border-accent/30">59</div>:
+                            <div class="bg-dark/50 p-3 rounded-xl border border-accent/30 animate-pulse">32</div>
+                        </div>
+                    </div>
+
+                    <a href="LINK_MERCADOPAGO_VITALICIO" class="group relative w-full py-5 bg-accent hover:bg-cyan-400 text-dark rounded-2xl font-extrabold text-xl transition-all duration-300 shadow-glow-accent hover:-translate-y-1 overflow-hidden">
+                        <span class="absolute inset-0 bg-white/40 translate-y-[100%] group-hover:translate-y-[0%] transition-transform duration-300"></span>
+                        <span class="relative z-10 flex items-center justify-center gap-3"><i class="fas fa-lock-open"></i> GARANTIR AGORA</span>
+                    </a>
+                    <p class="text-xs text-gray-400 flex items-center justify-center gap-2">
+                        <i class="fab fa-cc-mastercard"></i> <i class="fab fa-cc-visa"></i> <i class="fas fa-pix"></i> Pagamento Seguro
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="team" class="tab-content container mx-auto px-6 py-24">
+        <div class="text-center mb-20">
+            <h2 class="text-4xl font-tech font-bold mb-4">Quem constrói o The Vault</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg">Desenvolvido por especialistas obcecados por privacidade e performance.</p>
+        </div>
+        
+        <div class="flex justify-center">
+            <div class="glass-card p-12 rounded-[3rem] border-2 border-primary/30 max-w-2xl w-full text-center hover:border-primary transition-all duration-500 group relative overflow-hidden hover:-translate-y-3 hover:shadow-glow-primary/40">
+                 <div class="absolute inset-0 bg-gradient-to-tr from-primary/0 via-primary/5 to-accent/10 opacity-0 group-hover:opacity-100 transition duration-700"></div>
+                 <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/10 to-transparent"></div>
+
+                <div class="relative z-10 mt-4">
+                    <div class="w-48 h-48 mx-auto bg-dark rounded-full mb-10 overflow-hidden border-[6px] border-primary/20 group-hover:border-primary group-hover:scale-105 transition-all duration-500 shadow-glow-primary/30 p-1 relative">
+                        <div class="absolute inset-0 rounded-full animate-spin-slow border-2 border-dashed border-primary/50 opacity-0 group-hover:opacity-100 transition"></div>
+                        <div class="w-full h-full rounded-full bg-gradient-to-br from-gray-800 to-black flex items-center justify-center relative overflow-hidden">
+                             <i class="fas fa-user-astronaut text-7xl text-primary/50 absolute"></i>
+                             <img src="CEO.png" alt="William A. Rocha" class="w-full h-full object-cover relative z-10 mix-blend-overlay opacity-80 hover:opacity-100 transition">
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-4xl font-tech font-bold text-white mb-3">William A. Rocha</h3>
+                    <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-primary/10 text-primary text-sm font-bold tracking-widest mb-8 border border-primary/30 shadow-glow-primary/20">
+                        <i class="fas fa-code"></i> LEAD DEVELOPER & FOUNDER
+                    </div>
+                    
+                    <p class="text-gray-300 leading-relaxed mb-10 text-lg font-light px-8">
+                        Engenheiro de software full-stack especializado em cibersegurança ofensiva e defensiva. Arquiteto da tecnologia "Zero-Knowledge" do The Vault. Movido pela crença de que a privacidade é um direito humano fundamental, não um produto.
+                    </p>
+                    
+                    <div class="flex justify-center gap-8">
+                        <a href="#" class="w-14 h-14 rounded-2xl glass-card flex items-center justify-center text-gray-400 hover:text-white hover:bg-black hover:border-white transition-all duration-300 group/icon hover:-translate-y-1 hover:shadow-lg">
+                            <i class="fab fa-github text-2xl group-hover/icon:scale-110 transition"></i>
+                        </a>
+                        <a href="#" class="w-14 h-14 rounded-2xl glass-card flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#0077B5] hover:border-[#0077B5] transition-all duration-300 group/icon hover:-translate-y-1 hover:shadow-[#0077B5]/30">
+                            <i class="fab fa-linkedin-in text-2xl group-hover/icon:scale-110 transition"></i>
+                        </a>
+                         <a href="#" class="w-14 h-14 rounded-2xl glass-card flex items-center justify-center text-gray-400 hover:text-white hover:bg-gradient-to-tr hover:from-yellow-500 hover:via-red-500 hover:to-purple-500 transition-all duration-300 group/icon hover:-translate-y-1 hover:shadow-pink-500/30">
+                            <i class="fab fa-instagram text-2xl group-hover/icon:scale-110 transition"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="partners" class="tab-content container mx-auto px-6 py-24">
+        <div class="text-center mb-20">
+            <h2 class="text-4xl font-tech font-bold mb-4">Ecossistema de Tecnologia</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg">
+                Construído sobre gigantes. Nossa infraestrutura utiliza as tecnologias mais robustas e confiáveis do mercado.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mb-24">
+            <div class="glass-card h-40 rounded-3xl flex flex-col items-center justify-center border border-white/5 hover:border-primary/50 hover:bg-white/5 transition-all duration-500 group hover:-translate-y-2 hover:shadow-glow-primary/20">
+                <i class="fab fa-python text-5xl text-gray-500 group-hover:text-[#3776AB] transition mb-4 group-hover:scale-110 duration-300"></i>
+                <span class="font-bold font-tech text-xl text-gray-400 group-hover:text-white transition">Python Core</span>
+            </div>
+             <div class="glass-card h-40 rounded-3xl flex flex-col items-center justify-center border border-white/5 hover:border-primary/50 hover:bg-white/5 transition-all duration-500 group hover:-translate-y-2 hover:shadow-glow-primary/20">
+                <i class="fas fa-shield-alt text-5xl text-gray-500 group-hover:text-primary transition mb-4 group-hover:scale-110 duration-300"></i>
+                <span class="font-bold font-tech text-xl text-gray-400 group-hover:text-white transition">PyCryptodome</span>
+            </div>
+            <div class="glass-card h-40 rounded-3xl flex flex-col items-center justify-center border border-white/5 hover:border-primary/50 hover:bg-white/5 transition-all duration-500 group hover:-translate-y-2 hover:shadow-glow-primary/20">
+                <i class="fab fa-github text-5xl text-gray-500 group-hover:text-white transition mb-4 group-hover:scale-110 duration-300"></i>
+                <span class="font-bold font-tech text-xl text-gray-400 group-hover:text-white transition">Open Source</span>
+            </div>
+             <div class="glass-card h-40 rounded-3xl flex flex-col items-center justify-center border border-white/5 hover:border-primary/50 hover:bg-white/5 transition-all duration-500 group hover:-translate-y-2 hover:shadow-glow-primary/20">
+                <i class="fab fa-windows text-5xl text-gray-500 group-hover:text-[#0078D6] transition mb-4 group-hover:scale-110 duration-300"></i>
+                <span class="font-bold font-tech text-xl text-gray-400 group-hover:text-white transition">Windows Native</span>
+            </div>
+        </div>
+
+        <div class="glass-card border-2 border-dashed border-white/10 p-16 rounded-[3rem] text-center relative overflow-hidden max-w-4xl mx-auto hover:border-primary/30 transition duration-500 group">
+             <div class="absolute -top-40 -left-40 w-80 h-80 bg-primary/5 blur-[100px] rounded-full group-hover:bg-primary/10 transition duration-700"></div>
+             <div class="absolute -bottom-40 -right-40 w-80 h-80 bg-accent/5 blur-[100px] rounded-full group-hover:bg-accent/10 transition duration-700"></div>
+             
+             <i class="fas fa-handshake-angle text-6xl text-primary mb-8 relative z-10 group-hover:scale-110 transition duration-300"></i>
+            <h3 class="text-3xl font-tech font-bold text-white mb-4 relative z-10">Torne-se um Parceiro ou Anunciante</h3>
+            <p class="text-gray-300 mb-10 max-w-2xl mx-auto relative z-10 text-lg leading-relaxed">
+                Conecte sua marca a milhares de usuários engajados com tecnologia, segurança e privacidade. Oferecemos espaços de mídia e integrações estratégicas.
+            </p>
+            <button class="relative z-10 px-10 py-4 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-2xl font-bold text-lg transition-all duration-300 shadow-glow-primary/20 hover:shadow-glow-primary/50 hover:-translate-y-1">
+                <i class="fas fa-paper-plane mr-2"></i> Solicitar Mídia Kit
+            </button>
+        </div>
+    </div>
+
+    <div id="store" class="tab-content container mx-auto px-6 py-24">
+        <div class="text-center mb-24 relative">
+             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary/10 blur-[120px] rounded-full -z-10 animate-pulse-slow"></div>
+            <h2 class="text-5xl md:text-7xl font-tech font-extrabold mb-6 drop-shadow-xl">
+                Planos de <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Elite.</span><br/>Preços de <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Iniciante.</span>
+            </h2>
+            <p class="text-xl text-gray-400 max-w-3xl mx-auto font-light">
+                Criptografia militar não precisa custar uma fortuna. Escolha sua blindagem digital.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto items-center px-4 lg:px-0">
+            
+            <div class="glass-card p-8 rounded-3xl border border-white/10 hover:border-white/30 transition-all duration-500 relative group hover:-translate-y-2 hover:shadow-xl">
+                <div class="mb-8">
+                    <div class="inline-block p-3 bg-white/5 rounded-2xl mb-4 text-2xl text-gray-400 group-hover:text-white transition"><i class="fas fa-calendar-days"></i></div>
+                    <h3 class="text-xl font-tech font-bold text-gray-200 uppercase tracking-wider mb-2">Starter Mensal</h3>
+                    <p class="text-sm text-gray-500 font-medium">Para quem quer testar o poder.</p>
+                </div>
+                <div class="flex items-baseline gap-1 mb-8">
+                    <span class="text-lg text-gray-400 font-bold">R$</span>
+                    <span class="text-5xl font-extrabold text-white tracking-tight">9,90</span>
+                    <span class="text-gray-500 font-medium ml-1">/mês</span>
+                </div>
+                
+                <a href="LINK_MERCADOPAGO_MENSAL" class="block w-full py-4 text-center border-2 border-white/10 text-white font-bold rounded-2xl hover:bg-white hover:text-dark transition-all duration-300 mb-8 group-hover:border-white font-tech text-lg">
+                    Assinar 1 Mês
+                </a>
+
+                <ul class="space-y-4 text-sm text-gray-400 font-medium">
+                     <li class="flex gap-3 items-center"><i class="fas fa-check-circle text-white/70"></i> Acesso a todas as funções</li>
+                     <li class="flex gap-3 items-center"><i class="fas fa-check-circle text-white/70"></i> Atualizações padrão</li>
+                     <li class="flex gap-3 items-center"><i class="fas fa-check-circle text-white/70"></i> Suporte via E-mail</li>
+                </ul>
+            </div>
+
+            <div class="glass-card p-10 rounded-[2.5rem] border-2 border-primary relative transform md:scale-110 z-10 shadow-glow-primary hover:shadow-glow-accent transition-all duration-500 group hover:-translate-y-3 overflow-hidden bg-dark/40">
+                <div class="absolute inset-0 bg-gradient-to-b from-primary/20 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition duration-700"></div>
+                <div class="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-primary/30 to-transparent blur-[100px] rounded-full animate-pulse-slow"></div>
+
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-accent text-white text-sm font-bold px-8 py-2 rounded-b-2xl uppercase tracking-widest shadow-lg flex items-center gap-2">
+                    <i class="fas fa-crown animate-bounce"></i> Melhor Escolha
+                </div>
+
+                <div class="mb-8 mt-6 text-center relative z-10">
+                     <div class="mb-6 relative flex justify-center">
+                         <div class="absolute inset-0 bg-primary/30 blur-xl rounded-full animate-pulse"></div>
+                         <i class="fas fa-crown text-6xl text-primary relative z-10 drop-shadow-[0_0_15px_rgba(59,130,246,0.8)]"></i>
+                     </div>
+                     
+                    <h3 class="text-3xl font-tech font-bold text-white uppercase tracking-wider mb-2 drop-shadow">Ultimate Anual</h3>
+                    <p class="text-blue-200 font-medium">Segurança máxima. Custo mínimo.</p>
+                </div>
+                <div class="flex flex-col items-center mb-10 relative z-10">
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-2xl text-primary font-bold">R$</span>
+                        <span class="text-7xl font-extrabold text-white tracking-tight drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">79,90</span>
+                         <span class="text-gray-300 font-medium ml-1">/ano</span>
+                    </div>
+                    <div class="inline-flex items-center gap-2 text-sm text-primary bg-primary/10 px-4 py-1.5 rounded-full mt-4 border border-primary/30 font-bold shadow-glow-primary/20">
+                        <i class="fas fa-calculator"></i> Equivalente a R$ 6,65/mês
+                    </div>
+                </div>
+                
+                <a href="LINK_MERCADOPAGO_ANUAL" class="group/btn relative block w-full py-5 bg-primary hover:bg-accent text-white font-bold rounded-2xl text-center transition-all duration-300 text-xl shadow-glow-primary hover:shadow-glow-accent overflow-hidden mb-12 font-tech">
+                     <span class="absolute inset-0 bg-card-shine translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></span>
+                     <span class="relative z-10 flex items-center justify-center gap-3"><i class="fas fa-rocket"></i> GARANTIR OFERTA ANUAL</span>
+                </a>
+
+                <div class="border-t border-primary/20 pt-8 relative z-10">
+                    <p class="text-sm text-primary font-bold mb-4 uppercase tracking-wider">Vantagens Exclusivas:</p>
+                    <ul class="space-y-4 text-sm text-white font-medium">
+                        <li class="flex gap-3 items-center"><i class="fas fa-check-circle text-primary text-lg shadow-glow-primary/50 rounded-full"></i> <strong>Economia de 33%</strong></li>
+                         <li class="flex gap-3 items-center"><i class="fas fa-check-circle text-primary text-lg shadow-glow-primary/50 rounded-full"></i> <strong>Suporte Prioritário (WhatsApp)</strong></li>
+                        <li class="flex gap-3 items-center"><i class="fas fa-check-circle text-primary text-lg shadow-glow-primary/50 rounded-full"></i> Acesso Antecipado (Beta Tester)</li>
+                        <li class="flex gap-3 items-center"><i class="fas fa-check-circle text-primary text-lg shadow-glow-primary/50 rounded-full"></i> Badge Exclusiva no Perfil</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="glass-card p-8 rounded-3xl border border-white/10 hover:border-accent/50 transition-all duration-500 relative group hover:-translate-y-2 hover:shadow-xl">
+                <div class="mb-8">
+                    <div class="inline-block p-3 bg-white/5 rounded-2xl mb-4 text-2xl text-gray-400 group-hover:text-accent transition"><i class="fas fa-layer-group"></i></div>
+                    <h3 class="text-xl font-tech font-bold text-gray-200 uppercase tracking-wider mb-2">Trimestral</h3>
+                    <p class="text-sm text-gray-500 font-medium">O meio-termo perfeito.</p>
+                </div>
+                <div class="flex items-baseline gap-1 mb-8">
+                    <span class="text-lg text-gray-400 font-bold">R$</span>
+                    <span class="text-5xl font-extrabold text-white tracking-tight">24,90</span>
+                    <span class="text-gray-500 font-medium ml-1">/3 meses</span>
+                </div>
+                
+                <a href="LINK_MERCADOPAGO_TRIMESTRAL" class="block w-full py-4 text-center border-2 border-accent/30 text-accent font-bold rounded-2xl hover:bg-accent hover:text-dark transition-all duration-300 mb-8 group-hover:border-accent font-tech text-lg">
+                    Assinar Trimestral
+                </a>
+
+                <ul class="space-y-4 text-sm text-gray-400 font-medium">
+                     <li class="flex gap-3 items-center"><i class="fas fa-check-circle text-accent/70"></i> Acesso a todas as funções</li>
+                     <li class="flex gap-3 items-center"><i class="fas fa-check-circle text-accent/70"></i> Atualizações padrão</li>
+                     <li class="flex gap-3 items-center"><i class="fas fa-check-circle text-accent/70"></i> Suporte via E-mail Rápido</li>
+                </ul>
+            </div>
+        </div>
+         <p class="text-center text-gray-500 text-sm mt-16 flex items-center justify-center gap-4 opacity-70 hover:opacity-100 transition">
+            <i class="fas fa-lock"></i> Pagamentos processados de forma segura pelo Mercado Pago. Garantia de 7 dias.
+        </p>
+    </div>
+
+    <div id="reviews" class="container mx-auto px-6 py-24 border-t border-white/5">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-tech font-bold mb-4">Aprovado pela Comunidade</h2>
+            <p class="text-gray-400">Junte-se a centenas de beta-testers e profissionais que já migraram.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="glass-card p-8 rounded-2xl border border-white/5 hover:border-primary/30 transition duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold">CM</div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Carlos M.</h4>
+                        <span class="text-primary text-xs">DevOps Engineer</span>
+                    </div>
+                    <div class="ml-auto text-yellow-500 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                </div>
+                <p class="text-gray-400 text-sm italic">"Eu pagava R$ 40/mês no 1Password. O The Vault faz a mesma coisa, é mais rápido e eu sei exatamente onde meus dados estão. A migração foi instantânea."</p>
+            </div>
+
+            <div class="glass-card p-8 rounded-2xl border border-white/5 hover:border-primary/30 transition duration-300 transform md:-translate-y-4">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold">AB</div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Ana B.</h4>
+                        <span class="text-primary text-xs">Investidora Crypto</span>
+                    </div>
+                    <div class="ml-auto text-yellow-500 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                </div>
+                <p class="text-gray-400 text-sm italic">"Para quem mexe com cripto, nuvem é risco. A função de Notas Seguras offline do The Vault é exatamente o que eu precisava para minhas seeds."</p>
+            </div>
+
+            <div class="glass-card p-8 rounded-2xl border border-white/5 hover:border-primary/30 transition duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold">FX</div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Felipe X.</h4>
+                        <span class="text-primary text-xs">Pentester</span>
+                    </div>
+                    <div class="ml-auto text-yellow-500 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                </div>
+                <p class="text-gray-400 text-sm italic">"Analisei o código do hash. A entropia gerada é legítima. Finalmente uma solução nacional que leva a sério o conceito de Zero-Knowledge."</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="faq" class="container mx-auto px-6 pb-24 max-w-3xl">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-tech font-bold mb-4">Perguntas Frequentes</h2>
+        </div>
+
+        <div class="space-y-4">
+            <div class="glass-card rounded-xl overflow-hidden border border-white/5 hover:border-white/10 transition">
+                <details class="group">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-6 text-white">
+                        <span>O que acontece se eu perder minha Senha Mestra?</span>
+                        <span class="transition group-open:rotate-180 text-primary"><i class="fas fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="text-gray-400 text-sm px-6 pb-6 pt-0 leading-relaxed border-t border-white/5 mt-2">
+                        <p class="pt-4">Devido à nossa arquitetura <strong>Zero-Knowledge</strong>, nós NÃO temos acesso à sua senha mestra. Se você a perder, seus dados serão matematicamente irrecuperáveis. Isso garante que nem hackers, nem governos, nem nós possamos acessar seu cofre.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="glass-card rounded-xl overflow-hidden border border-white/5 hover:border-white/10 transition">
+                <details class="group">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-6 text-white">
+                        <span>Funciona sem internet?</span>
+                        <span class="transition group-open:rotate-180 text-primary"><i class="fas fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="text-gray-400 text-sm px-6 pb-6 pt-0 leading-relaxed border-t border-white/5 mt-2">
+                        <p class="pt-4">Sim. O The Vault é "Local-First". Você pode acessar, editar e salvar suas senhas totalmente offline. A internet só é necessária para baixar atualizações ou verificar vazamentos na Dark Web.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <footer class="border-t border-white/5 mt-auto py-12 bg-dark relative z-10">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+             <div class="flex items-center gap-3 opacity-70 hover:opacity-100 transition group cursor-pointer">
+                <div class="bg-white/5 p-2.5 rounded-xl border border-white/10 group-hover:border-primary/50 transition">
+                     <i class="fas fa-shield-halved text-2xl text-gray-300 group-hover:text-primary transition"></i>
+                </div>
+                <div>
+                    <span class="font-tech font-bold tracking-wider text-gray-300 text-lg block">THE VAULT SYSTEMS</span>
+                    <span class="text-xs text-gray-500 font-mono">Enterprise Grade Security</span>
+                </div>
+            </div>
+            <div class="flex flex-wrap justify-center gap-8 text-sm text-gray-400 font-medium">
+                <a href="#" class="hover:text-primary transition underline-offset-4 hover:underline">Termos de Uso</a>
+                <a href="#" class="hover:text-primary transition underline-offset-4 hover:underline">Política de Privacidade</a>
+                <a href="#" class="hover:text-primary transition underline-offset-4 hover:underline">FAQ & Suporte</a>
+            </div>
+            <div class="text-xs text-gray-600 font-mono flex items-center gap-2">
+                <span>© 2025 The Vault.</span> 
+                <span class="hidden md:inline">|</span>
+                <span>Forged in cyber-space <i class="fas fa-bolt text-accent mx-1"></i></span>
             </div>
         </div>
     </footer>
 
-    <div id="promoModal" class="modal-overlay">
-        <div class="modal-box">
-            <span onclick="closeModal()" class="close-btn">&times;</span>
-            <div class="text-primary text-4xl mb-4"><i class="fas fa-user-shield"></i></div>
-            <h2 class="text-2xl font-bold text-white mb-2">Não saia desprotegido!</h2>
-            <p class="text-gray-400 mb-6">Detectamos que seu IP está visível. Garanta sua licença Anual hoje com bônus de VPN incluso.</p>
-            
-            <div class="bg-dark p-4 rounded-lg border border-gray-700 mb-6 flex justify-between items-center">
-                <span class="text-gray-400 line-through">R$ 170,00</span>
-                <span class="text-2xl font-bold text-accent">R$ 50,00</span>
-            </div>
-
-            <button onclick="switchTab('store'); closeModal()" class="w-full bg-primary hover:bg-blue-600 text-white font-bold py-3 rounded-lg shadow-neon transition">
-                RESGATAR OFERTA AGORA
-            </button>
-            <p class="text-xs text-gray-500 mt-4 cursor-pointer hover:text-white" onclick="closeModal()">Dispensar risco e continuar</p>
-        </div>
-    </div>
+    <a href="https://wa.me/5585992401710" target="_blank" class="fixed bottom-6 right-6 z-50 bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-[0_0_20px_rgba(34,197,94,0.5)] transition-all duration-300 hover:-translate-y-1 hover:scale-110 flex items-center justify-center group">
+        <i class="fab fa-whatsapp text-3xl"></i>
+        <span class="absolute right-full mr-4 bg-white text-dark px-3 py-1 rounded text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">Fale Conosco</span>
+    </a>
 
     <script>
-        // Lógica de Tabs e Navegação
+        // Carregamento inicial (Loader)
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('preloader').style.opacity = '0';
+                document.getElementById('preloader').style.visibility = 'hidden';
+            }, 2500); // 2.5s de efeito hacker
+        };
+
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('[data-target]').forEach(btn => {
-                btn.classList.remove('text-white', 'text-primary'); 
-                btn.classList.add('text-gray-300');
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.style.display = 'none';
+                el.classList.remove('active');
             });
-
+            
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('text-white', 'bg-white/10', 'shadow-glow-primary/10');
+                el.classList.add('text-gray-400');
+            });
+            
             const targetContent = document.getElementById(tabId);
-            if (targetContent) targetContent.classList.add('active');
+            if (targetContent) {
+                targetContent.style.display = 'block';
+                void targetContent.offsetWidth; 
+                targetContent.classList.add('active');
+            }
 
-            document.querySelectorAll(`[data-target="${tabId}"]`).forEach(btn => {
-                btn.classList.remove('text-gray-300');
-                btn.classList.add('text-white');
-            });
+            const btn = document.querySelector(`button[data-target="${tabId}"]`);
+            if(btn) {
+                btn.classList.add('text-white', 'bg-white/10', 'shadow-glow-primary/10');
+                btn.classList.remove('text-gray-400');
+            }
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Menu Mobile
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
-
-        // Lógica do Modal de Conversão
-        function showModal() {
-            if (!sessionStorage.getItem('modalClosed')) {
-                document.getElementById('promoModal').classList.add('show');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.style.opacity = 0;
+                menu.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                     menu.style.transition = 'all 0.3s ease-out';
+                     menu.style.opacity = 1;
+                     menu.style.transform = 'translateY(0)';
+                }, 10);
+            } else {
+                 menu.style.opacity = 0;
+                 menu.style.transform = 'translateY(-10px)';
+                 setTimeout(() => {
+                    menu.classList.add('hidden');
+                 }, 300);
             }
         }
 
-        function closeModal() {
-            document.getElementById('promoModal').classList.remove('show');
-            sessionStorage.setItem('modalClosed', 'true'); // Só mostra 1x por sessão
-        }
-
-        // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
             switchTab('home');
-
-            // Disparar o modal após 5 segundos (se não for mobile muito pequeno)
-            setTimeout(() => {
-                if(window.innerWidth > 600) {
-                    showModal();
-                }
-            }, 5000);
         });
     </script>
 </body>
